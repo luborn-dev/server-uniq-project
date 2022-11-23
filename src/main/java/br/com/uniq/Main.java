@@ -1,45 +1,82 @@
 package br.com.uniq;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-// THIS IS JUST FOR TEST
-// ALL THE CODE BELOW WILL CHANGE
-// THIS WILL BE OUR TEMPLATE TO START WORKING WITH THE SERVER SIDE.
-
 public class Main {
     public static void main(String[] args) {
-        try
-        {
-            ServerSocket pedido  = new ServerSocket (7777);
+        ServerSocket server = null;
 
-            // fio do telefone fixo preso na parede
-            Socket conexao = pedido.accept(); // 1 ponta do fio
+        try {
+            server  = new ServerSocket (7777);
+            while (true) {
+                Socket connection = server.accept();
 
-            BufferedReader receptor =
-                    new BufferedReader (
-                            new InputStreamReader(
-                                    conexao.getInputStream ()));
+                BufferedReader bufferedReader =
+                        new BufferedReader (
+                                new InputStreamReader(
+                                        connection.getInputStream ()));
 
-            String texto;
+                String string;
 
-            do
-            {
-                texto = receptor.readLine ();
-                System.out.println (texto);
+                string = bufferedReader.readLine ();
+                System.out.println (string);
             }
-            while (!texto.equalsIgnoreCase("FIM"));
-
-            receptor.close();
-            conexao.close();
-
-            pedido.close();
-        }
-        catch (Exception erro)
-        {
+        } catch (Exception erro) {
             System.err.println (erro.getMessage());
+        }
+        finally {
+            if (server != null) {
+                try {
+                    server.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static class ClientHandler implements Runnable {
+        private final Socket clientSocket;
+
+        public ClientHandler(Socket socket) {
+            this.clientSocket = socket;
+        }
+
+        public void run() {
+            PrintWriter out = null;
+            BufferedReader in = null;
+
+            try {
+                out = new PrintWriter(clientSocket.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+                String line;
+                while ((line = in.readLine()) != null) {
+                    System.out.printf("Sent from the client %s\n", line);
+                    out.println(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            finally {
+                try {
+                    if (out != null) {
+                        out.close();
+                    }
+                    if (in != null) {
+                        in.close();
+                        clientSocket.close();
+                    }
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
