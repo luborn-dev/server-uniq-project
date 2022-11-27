@@ -13,6 +13,7 @@ public class ConnectionFactory {
             return DriverManager.getConnection(url, user, password);
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e);
             Logger.getLogger("Erro ao conectar ao banco de dados, exception: " + e.getMessage());
         }
