@@ -27,14 +27,15 @@ public class PatientDAO {
         try {
             String sql;
 
-            sql = "INSERT INTO [dbo].[Pacientes] " +
-                    "(nome, cpf_paciente, idade) " +
-                    "VALUES (?, ?, ?)";
+            sql = "INSERT INTO [dbo].[PACIENTES] " +
+                    "(Nome_Paciente, CPF_Paciente, Idade, Senha) " +
+                    "VALUES (?, ?, ?, ?)";
             if (connection != null) {
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setString(1, patient.getName());
                 ps.setString(2, patient.getCpfPatient());
                 ps.setInt(3, patient.getAge());
+                ps.setString(4,patient.getPassword());
 
                 ps.executeUpdate();
                 System.out.println("Paciente registrado com sucesso!");
@@ -55,7 +56,7 @@ public class PatientDAO {
         Connection connection = ConnectionFactory.getConnection();
 
         String sql;
-        sql = "SELECT cpf_paciente from [dbo].[Pacientes] WHERE cpf_paciente = ?";
+        sql = "SELECT CPF_Paciente from [dbo].[PACIENTES] WHERE CPF_Paciente = ?";
 
         if (connection != null) {
             PreparedStatement ps = connection.prepareStatement(sql);

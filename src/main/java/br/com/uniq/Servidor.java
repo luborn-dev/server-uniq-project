@@ -41,11 +41,6 @@ public class Servidor {
     }
 
     public static void main(String[] args) throws IOException {
-        try {
-            PatientDAO.signUp(new Patient("Adalberto", "12345678901", 69,"senha123"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         ServerSocket serverSocket = new ServerSocket(3000);
         Servidor server = new Servidor(serverSocket);
         server.startServer();
