@@ -62,8 +62,9 @@ public class ClientHandler implements Runnable{
                                     cadastroRecebidoDoCliente.getIdade(),
                                     cadastroRecebidoDoCliente.getSenha()
                                     ));
-                            transmissor.writeObject(new RespostaDoServidor("Sucesso","ok"));
+                            transmissor.writeObject(new RespostaDoServidor("Usuário cadastrado!","ok"));
                         } catch (Exception e){
+                            transmissor.writeObject(new RespostaDoServidor("Erro ao cadastrar usuário","erro"));
                             System.out.println(e);
                         }
                     }
