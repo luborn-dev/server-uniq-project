@@ -15,7 +15,7 @@ public class ClientHandler implements Runnable{
     private Socket socket;
     private ObjectInputStream receptor;
     private ObjectOutputStream transmissor;
-    private MeuObj clientInfo;
+    private ModeloDeCadastro clientInfo;
 
     public ClientHandler(Socket socket) {
         try{
@@ -28,7 +28,7 @@ public class ClientHandler implements Runnable{
 //            broadcastMessage("SERVER: "+clientUsername+" has entered the chat!");
 
         } catch (IOException e){
-            closeEverything(socket, transmissor, receptor);
+            fecharTodasConexoes(socket, transmissor, receptor);
         }
 
     }
@@ -38,78 +38,63 @@ public class ClientHandler implements Runnable{
 
         while(socket.isConnected()){
 
-            Object recebidos = null;
+            Object recebidoDoCliente = null;
 
             try {
-                recebidos = receptor.readObject();
+                recebidoDoCliente = receptor.readObject();
             } catch (IOException | ClassNotFoundException e) {
             }
 
             try {
-                if (recebidos != null){
-                    if (recebidos instanceof br.com.uniq.MeuObj){
-                        MeuObj messageFromClient = (MeuObj) recebidos;
-                        System.out.println("MeuObj");
-
+                if (recebidoDoCliente != null){
+                    if (recebidoDoCliente instanceof ModeloDeCadastro){
+                        ModeloDeCadastro cadastroRecebidoDoCliente = (ModeloDeCadastro) recebidoDoCliente;
+                        System.out.println("Recebido tentativa de cadastro");
                         System.out.println(
-                                "Nome: " + messageFromClient.getNome() +
-                                        "\nCpf: " + messageFromClient.getCpf() +
-                                        "\nIdade: " + messageFromClient.getIdade() +
-                                        "\nSenha: " + messageFromClient.getSenha());
+                                "\nNome: " + cadastroRecebidoDoCliente.getNome() +
+                                        "\nCpf: " + cadastroRecebidoDoCliente.getCpf() +
+                                        "\nIdade: " + cadastroRecebidoDoCliente.getIdade() +
+                                        "\nSenha: " + cadastroRecebidoDoCliente.getSenha());
                         try{
-                            PatientDAO.signUp(new Patient(messageFromClient.getNome(),messageFromClient.getCpf(),
-                                    messageFromClient.getIdade(),messageFromClient.getSenha()));
-                            transmissor.writeObject(new CastingToDb("Sucesso","ok"));
-//                        Thread.currentThread().interrupt(); @TODO
+                            PatientDAO.cadastrarNovoUsuario(new Patient(
+                                    cadastroRecebidoDoCliente.getNome(),
+                                    cadastroRecebidoDoCliente.getCpf(),
+                                    cadastroRecebidoDoCliente.getIdade(),
+                                    cadastroRecebidoDoCliente.getSenha()
+                                    ));
+                            transmissor.writeObject(new RespostaDoServidor("Sucesso","ok"));
                         } catch (Exception e){
                             System.out.println(e);
                         }
                     }
-                    if (recebidos instanceof br.com.uniq.LoginModelo){
-                        System.out.println("LoginModelo");
-                        LoginModelo recebidosCasted = (LoginModelo) recebidos;
-                        System.out.println(recebidosCasted.getCpf());
+                    if (recebidoDoCliente instanceof ModeloDeLogin){
+                        ModeloDeLogin loginRecebidoDoCliente = (ModeloDeLogin) recebidoDoCliente;
+                        System.out.println("Recebido tentativa de Login");
+                        System.out.println(loginRecebidoDoCliente.getCpf());
                         try{
-                            boolean isSignUp = PatientDAO.isSignUp(recebidosCasted.getCpf());
+                            boolean isSignUp = PatientDAO.checarSeUsuarioJaEstaRegistrado(loginRecebidoDoCliente.getCpf());
                             if(isSignUp){
                                 System.out.println("Sucesso - Encontrado");
-                                transmissor.writeObject(new CastingToDb("Usuario encontrado","ok"));
+                                transmissor.writeObject(new RespostaDoServidor("Usuário encontrado","ok"));
                             } else{
                                 System.out.println("Erro - Nao encontrado");
-                                transmissor.writeObject(new CastingToDb("Usuário não encontrado","erro"));
+                                transmissor.writeObject(new RespostaDoServidor("Usuário não encontrado","erro"));
                             }
                         } catch (Exception e){
                             System.out.println("Erro - #10");
-                            transmissor.writeObject(new CastingToDb("Erro interno","erro"));
-                        }
+                            transmissor.writeObject(new RespostaDoServidor("Erro interno","erro"));
+                            }
                         }
                     }
             } catch (Exception e){
-            System.out.println(e);
-            closeEverything(socket, transmissor, receptor);
-            break;
+                System.out.println(e);
+                fecharTodasConexoes(socket, transmissor, receptor);
+                break;
             }
         }
-    }
-    public void broadcastMessage(MeuObj messageToSend){
-        for (ClientHandler clientHandler : clientHandlers){
-            try{
-                if (!clientHandler.clientInfo.equals(clientInfo)) {
-                    clientHandler.transmissor.writeObject(messageToSend);
-                    clientHandler.transmissor.flush();
-                }
-            } catch (IOException e){
-                closeEverything(socket, transmissor, receptor);
-            }
-        }
-    }
-    public void removeClientHandler(){
-        clientHandlers.remove(this);
-//        broadcastMessage("SERVER: "+clientUsername+ " has left the chat");
     }
 
-    public void closeEverything(Socket socket, ObjectOutputStream transmissor, ObjectInputStream receptor){
-        removeClientHandler();
+    public void fecharTodasConexoes(Socket socket, ObjectOutputStream transmissor, ObjectInputStream receptor){
         try{
             if (receptor != null){
                 receptor.close();

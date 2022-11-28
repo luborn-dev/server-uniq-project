@@ -3,48 +3,32 @@ package br.com.uniq.database.dbos;
 import java.util.Objects;
 
 public class Patient implements Cloneable {
-    private String cpfPatient;
-    private String name;
-    private int age;
-    private String password;
+    private String nome;
+    private String cpf;
+    private int idade;
+    private String senha;
 
-    public void setAge(int age) {
-        this.age = age;
+    public String getNome() {
+        return nome;
     }
 
-    public void setCpfPatient(String cpfPatient) {
-        this.cpfPatient = cpfPatient;
+    public String getCpf() {
+        return cpf;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setPassword(String password) {
-        this.password = password;
+    public int getIdade() {
+        return idade;
     }
 
-    public int getAge() {
-        return age;
+    public String getSenha() {
+        return senha;
     }
 
-    public String getCpfPatient() {
-        return cpfPatient;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-
-    public Patient(String name, String cpfPatient, int age, String password) {
-        this.name = name;
-        this.cpfPatient = cpfPatient;
-        this.age = age;
-        this.password = password;
+    public Patient(String nome, String cpf, int idade, String senha) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.idade = idade;
+        this.senha = senha;
     }
 
     @Override
@@ -52,19 +36,18 @@ public class Patient implements Cloneable {
         return super.equals(obj);
     }
 
-
     @Override
     public int hashCode() {
-        return Objects.hash(cpfPatient, name, age);
+        return Objects.hash(cpf, nome, idade, senha);
     }
-
 
     @Override
     public String toString() {
         return "Patient{" +
-                "cpfPatient='" + cpfPatient + '\'' +
-                ", name='" + name + '\'' +
-                ", age=" + age +
+                "nome='" + nome + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", idade=" + idade +
+                ", senha='" + senha + '\'' +
                 '}';
     }
 

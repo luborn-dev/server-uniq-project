@@ -8,17 +8,17 @@ import java.sql.ResultSet;
 
 public class PatientDAO {
 
-    public static void signUp(Patient patient) throws Exception {
+    public static void cadastrarNovoUsuario(Patient patient) throws Exception {
         if (patient == null) {
             throw new Exception("Paciente não fornecido");
         }
-        if (patient.getCpfPatient().length() != 11) {
+        if (patient.getCpf().length() != 11) {
             throw new Exception("CPF inválido!");
         }
-        if (patient.getAge() > 120) {
+        if (patient.getIdade() > 120) {
             throw new Exception("Idade inválida!");
         }
-        if (isSignUp(patient.getCpfPatient())) {
+        if (checarSeUsuarioJaEstaRegistrado(patient.getCpf())) {
             throw new Exception("Paciente já registrado, insira outro CPF");
         }
 
@@ -32,27 +32,27 @@ public class PatientDAO {
                     "VALUES (?, ?, ?, ?)";
             if (connection != null) {
                 PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setString(1, patient.getName());
-                ps.setString(2, patient.getCpfPatient());
-                ps.setInt(3, patient.getAge());
-                ps.setString(4,patient.getPassword());
+                ps.setString(1, patient.getNome());
+                ps.setString(2, patient.getCpf());
+                ps.setInt(3, patient.getIdade());
+                ps.setString(4,patient.getSenha());
 
                 ps.executeUpdate();
                 System.out.println("Paciente registrado com sucesso!");
             }
         } catch (Exception e) {
-            throw new Exception("Erro ao registrar paciente: " + patient.getCpfPatient());
+            throw new Exception("Erro ao registrar paciente: " + patient.getCpf());
         }
     }
 
-    public static boolean isSignUp(String cpfPatient) throws Exception {
-        if (cpfPatient == null) {
+    public static boolean checarSeUsuarioJaEstaRegistrado(String cpf) throws Exception {
+        if (cpf == null) {
             throw new Exception("CPF não inserido.");
         }
-        if (cpfPatient.length() != 11) {
+        if (cpf.length() != 11) {
             throw new Exception("CPF inválido!");
         }
-        boolean isSignUp = false;
+        boolean jaRegistrado = false;
         Connection connection = ConnectionFactory.getConnection();
 
         String sql;
@@ -60,15 +60,15 @@ public class PatientDAO {
 
         if (connection != null) {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, cpfPatient);
+            ps.setString(1, cpf);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                isSignUp = true;
+                jaRegistrado = true;
             }
             else {
-                isSignUp = false;
+                jaRegistrado = false;
             }
         }
-        return isSignUp;
+        return jaRegistrado;
     }
 }

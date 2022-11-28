@@ -1,8 +1,5 @@
 package br.com.uniq;
 
-import br.com.uniq.database.daos.PatientDAO;
-import br.com.uniq.database.dbos.Patient;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,13 +11,11 @@ public class Servidor {
         this.serverSocket = serverSocket;
     }
 
-    public void startServer() {
+    public void iniciarServidor() {
         try {
             while (!serverSocket.isClosed()) {
-
-
                 Socket socket = serverSocket.accept();
-                System.out.println("Novo cliente se conectou");
+                System.out.println("Nova conexão");
                 ClientHandler clientHandler = new ClientHandler(socket);
                 Thread thread = new Thread(clientHandler);
                 thread.start();
@@ -30,20 +25,9 @@ public class Servidor {
         }
     }
 
-
-    public void closeServerSocket(){
-        try{
-            if(serverSocket != null){
-                serverSocket.close();
-            }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(3000);
-        Servidor server = new Servidor(serverSocket);
-        server.startServer();
+        Servidor servidor = new Servidor(serverSocket);
+        servidor.iniciarServidor();
     }
 }
