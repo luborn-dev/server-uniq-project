@@ -18,6 +18,7 @@ public class Servidor {
         try {
             while (!serverSocket.isClosed()) {
 
+
                 Socket socket = serverSocket.accept();
                 System.out.println("Novo cliente se conectou");
                 ClientHandler clientHandler = new ClientHandler(socket);

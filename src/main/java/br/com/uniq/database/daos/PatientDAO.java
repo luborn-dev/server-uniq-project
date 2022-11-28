@@ -65,6 +65,9 @@ public class PatientDAO {
             if (rs.next()) {
                 isSignUp = true;
             }
+            else {
+                isSignUp = false;
+            }
         }
         return isSignUp;
     }

@@ -38,47 +38,56 @@ public class ClientHandler implements Runnable{
 
         while(socket.isConnected()){
 
-            Object recebidos;
+            Object recebidos = null;
 
             try {
                 recebidos = receptor.readObject();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+            } catch (IOException | ClassNotFoundException e) {
             }
 
             try {
-                if (recebidos instanceof br.com.uniq.MeuObj){
-                    MeuObj messageFromClient = (MeuObj) recebidos;
-                    System.out.println("MeuObj");
+                if (recebidos != null){
+                    if (recebidos instanceof br.com.uniq.MeuObj){
+                        MeuObj messageFromClient = (MeuObj) recebidos;
+                        System.out.println("MeuObj");
 
-                    System.out.println(
-                            "Nome: " + messageFromClient.getNome() +
-                            "\nCpf: " + messageFromClient.getCpf() +
-                            "\nIdade: " + messageFromClient.getIdade() +
-                            "\nSenha: " + messageFromClient.getSenha());
-                    try{
-                        PatientDAO.signUp(new Patient(messageFromClient.getNome(),messageFromClient.getCpf(),
-                                messageFromClient.getIdade(),messageFromClient.getSenha()));
-                        transmissor.writeObject(new CastingToDb("Sucesso","ok"));
-                    } catch (Exception e){
-                        System.out.println(e);
+                        System.out.println(
+                                "Nome: " + messageFromClient.getNome() +
+                                        "\nCpf: " + messageFromClient.getCpf() +
+                                        "\nIdade: " + messageFromClient.getIdade() +
+                                        "\nSenha: " + messageFromClient.getSenha());
+                        try{
+                            PatientDAO.signUp(new Patient(messageFromClient.getNome(),messageFromClient.getCpf(),
+                                    messageFromClient.getIdade(),messageFromClient.getSenha()));
+                            transmissor.writeObject(new CastingToDb("Sucesso","ok"));
+//                        Thread.currentThread().interrupt(); @TODO
+                        } catch (Exception e){
+                            System.out.println(e);
+                        }
                     }
-
-                }
-                if (recebidos instanceof br.com.uniq.MyString){
-                    MyString recebidosCasted = (MyString) recebidos;
-                    System.out.println("Eh mystring");
-                    System.out.println(recebidosCasted.getCpf());
-                }
-
-//                broadcastMessage(messageFromClient);
-
+                    if (recebidos instanceof br.com.uniq.LoginModelo){
+                        System.out.println("LoginModelo");
+                        LoginModelo recebidosCasted = (LoginModelo) recebidos;
+                        System.out.println(recebidosCasted.getCpf());
+                        try{
+                            boolean isSignUp = PatientDAO.isSignUp(recebidosCasted.getCpf());
+                            if(isSignUp){
+                                System.out.println("Sucesso - Encontrado");
+                                transmissor.writeObject(new CastingToDb("Usuario encontrado","ok"));
+                            } else{
+                                System.out.println("Erro - Nao encontrado");
+                                transmissor.writeObject(new CastingToDb("Usuário não encontrado","erro"));
+                            }
+                        } catch (Exception e){
+                            System.out.println("Erro - #10");
+                            transmissor.writeObject(new CastingToDb("Erro interno","erro"));
+                        }
+                        }
+                    }
             } catch (Exception e){
-                System.out.println(e);
-                closeEverything(socket, transmissor, receptor);
-                break;
+            System.out.println(e);
+            closeEverything(socket, transmissor, receptor);
+            break;
             }
         }
     }
