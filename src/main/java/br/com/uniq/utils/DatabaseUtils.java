@@ -2,7 +2,6 @@ package br.com.uniq.utils;
 
 import br.com.uniq.database.ConnectionFactory;
 import br.com.uniq.database.dbos.Patient;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

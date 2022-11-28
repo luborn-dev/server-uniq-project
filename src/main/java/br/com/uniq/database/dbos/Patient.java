@@ -1,78 +1,55 @@
 package br.com.uniq.database.dbos;
 
-import java.util.Date;
 import java.util.Objects;
 
-public class Patient {
-    private String name;
-    private Integer cpfPatient;
-    private Date birthDate;
-    private char genre;
+public class Patient implements Cloneable {
+    private String nome;
+    private String cpf;
+    private int idade;
+    private String senha;
 
-    private String password;
-
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
 
-    public Integer getCpfPatient() {
-        return cpfPatient;
+    public String getCpf() {
+        return cpf;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
+    public int getIdade() {
+        return idade;
     }
 
-    public char getGenre() {
-        return genre;
+    public String getSenha() {
+        return senha;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCpfPatient(Integer cpfPatient) {
-        this.cpfPatient = cpfPatient;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public void setGenre(char genre) {
-        this.genre = genre;
-    }
-
-    public Patient(String name, Integer cpfPatient, Date birthDate, String password) {
-        this.name = name;
-        this.cpfPatient = cpfPatient;
-        this.birthDate = birthDate;
-        this.password = password;
+    public Patient(String nome, String cpf, int idade, String senha) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.idade = idade;
+        this.senha = senha;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Patient patient = (Patient) o;
-        return genre == patient.genre
-            && Objects.equals(name, patient.name) && Objects.equals(cpfPatient, patient.cpfPatient)
-            && Objects.equals(birthDate, patient.birthDate);
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, cpfPatient, birthDate, genre);
+        return Objects.hash(cpf, nome, idade, senha);
     }
 
     @Override
     public String toString() {
         return "Patient{" +
-                "name='" + name + '\'' +
-                ", cpfPatient=" + cpfPatient +
-                ", birthDate=" + birthDate +
-                ", genre=" + genre +
+                "nome='" + nome + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", idade=" + idade +
+                ", senha='" + senha + '\'' +
                 '}';
     }
 
 }
+
