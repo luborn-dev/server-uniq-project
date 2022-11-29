@@ -14,8 +14,11 @@ public class DatabaseUtils {
 
         try {
             String sql;
-            sql = "DELETE FROM [dbo].[Pacientes] " +
-                    "WHERE cpf_paciente = ?";
+//            PARA CONEXAO CLOUD
+//            sql = "DELETE FROM [dbo].[Pacientes] " +
+//                    "WHERE cpf_paciente = ?";
+            sql = "DELETE FROM PACIENTES " +
+                    "WHERE CPF_Paciente = ?";
 
             if (connection != null) {
                 PreparedStatement ps = connection.prepareStatement(sql);
@@ -34,7 +37,10 @@ public class DatabaseUtils {
         Patient patient = null;
 
         String sql;
-        sql = "SELECT * FROM [dbo].[Pacientes] " +
+//        PARA CONEXAO CLOUD
+//        sql = "SELECT * FROM [dbo].[Pacientes] " +
+//                "WHERE cpf_paciente = ?";
+        sql = "SELECT * FROM PACIENTES " +
                 "WHERE cpf_paciente = ?";
 
         if (connection != null) {

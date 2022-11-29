@@ -85,6 +85,7 @@ public class ClientHandler implements Runnable{
                                 transmissor.writeObject(new RespostaDoServidor("Usuário não encontrado","erro"));
                             }
                         } catch (Exception e){
+                            e.printStackTrace();
                             System.out.println("Erro - #10");
                             transmissor.writeObject(new RespostaDoServidor("Erro interno","erro"));
                             }

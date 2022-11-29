@@ -28,8 +28,11 @@ public class PatientDAO {
 
         try {
             String sql;
-
-            sql = "INSERT INTO [dbo].[PACIENTES] " +
+//            PARA CONEXAO EM CLOUD
+//            sql = "INSERT INTO [dbo].[PACIENTES] " +
+//                    "(Nome_Paciente, CPF_Paciente, Idade, Senha) " +
+//                    "VALUES (?, ?, ?, ?)";
+            sql = "INSERT INTO PACIENTES " +
                     "(Nome_Paciente, CPF_Paciente, Idade, Senha) " +
                     "VALUES (?, ?, ?, ?)";
             if (connection != null) {
@@ -58,7 +61,9 @@ public class PatientDAO {
         Connection connection = ConnectionFactory.getConnection();
 
         String sql;
-        sql = "SELECT NOME_Paciente, CPF_Paciente from [dbo].[PACIENTES] WHERE CPF_Paciente = ?";
+//        PARA CONEXAO CLOUD
+//        sql = "SELECT NOME_Paciente, CPF_Paciente from [dbo].[PACIENTES] WHERE CPF_Paciente = ?";
+        sql = "SELECT NOME_Paciente, CPF_Paciente from PACIENTES WHERE CPF_Paciente = ?";
 
         if (connection != null) {
             PreparedStatement ps = connection.prepareStatement(sql);
