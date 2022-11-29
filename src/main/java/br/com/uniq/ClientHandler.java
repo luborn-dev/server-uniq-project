@@ -1,5 +1,6 @@
 package br.com.uniq;
 
+import br.com.uniq.database.daos.ExamesDAO;
 import br.com.uniq.database.daos.PatientDAO;
 import br.com.uniq.database.dbos.Patient;
 
@@ -76,7 +77,9 @@ public class ClientHandler implements Runnable{
                             boolean isSignUp = PatientDAO.checarSeUsuarioJaEstaRegistrado(loginRecebidoDoCliente.getCpf());
                             if(isSignUp){
                                 System.out.println("Sucesso - Encontrado");
-                                transmissor.writeObject(new RespostaDoServidor("Usuário encontrado","ok"));
+                                String nomeDoUsuarioLogado = PatientDAO.nomeDoUsuarioRegistrado;
+
+                                transmissor.writeObject(new RespostaDoServidor(nomeDoUsuarioLogado,"ok"));
                             } else{
                                 System.out.println("Erro - Nao encontrado");
                                 transmissor.writeObject(new RespostaDoServidor("Usuário não encontrado","erro"));
@@ -86,6 +89,25 @@ public class ClientHandler implements Runnable{
                             transmissor.writeObject(new RespostaDoServidor("Erro interno","erro"));
                             }
                         }
+                    if (recebidoDoCliente instanceof String){
+                        String cpfRecebidoDoCliente = (String) recebidoDoCliente;
+                        System.out.println("Recebido tentativa de carregar exames");
+                        System.out.println(cpfRecebidoDoCliente);
+                        try{
+                            ArrayList<ModeloDeExames> exames = new ArrayList<>();
+                            exames = ExamesDAO.checarExames(cpfRecebidoDoCliente);
+                            if(exames != null){
+                                System.out.println("Sucesso - Exames encontrados");
+                                transmissor.writeObject(new RespostaDoServidor(exames,"ok"));
+                            } else{
+                                System.out.println("Erro - Nao encontrado");
+                                transmissor.writeObject(new RespostaDoServidor("Exames não encontrados","erro"));
+                            }
+                        } catch (Exception e){
+                            System.out.println("Erro - #10");
+                            transmissor.writeObject(new RespostaDoServidor("Erro interno","erro"));
+                        }
+                    }
                     }
             } catch (Exception e){
                 System.out.println(e);
