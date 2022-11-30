@@ -10,6 +10,7 @@ public class Servidor {
     public void iniciarServidor() throws IOException {
 
         try {
+            System.out.println("SERVIDOR INICIADO, AGUARDANDO CONEXÕES");
             serverSocket = new ServerSocket(3002);
             while (true) {
                 socket = serverSocket.accept();

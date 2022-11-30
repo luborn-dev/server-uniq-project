@@ -33,7 +33,8 @@ public class ClientHandler implements Runnable{
             transmissor = new ObjectOutputStream(socket.getOutputStream());
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Cliente desconectado -> " +socket);
+            throw new RuntimeException();
         }
 
         while(socket.isConnected()){
