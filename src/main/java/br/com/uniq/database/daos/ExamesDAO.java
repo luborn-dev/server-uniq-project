@@ -41,13 +41,19 @@ public class ExamesDAO {
                     String espec_medico = resultSet.getString("Especializacao_Doutor");
                     String tipo_exame = resultSet.getString("Tipo_Exame_Area");
                     Date data_realizacao_exame = resultSet.getDate("Data_Hora_Exame");
-                    exames.add(new ModeloDeExames(nome_medico, espec_medico, tipo_exame, data_realizacao_exame));
+                    String conclusao = resultSet.getString("Conclusao");
+                    String status = resultSet.getString("Status");
+                    String nomeDaClinica = resultSet.getString("Clinica");
+                    String cpfPaciente = resultSet.getString("CPF_Paciente");
+                    exames.add(new ModeloDeExames(nome_medico, espec_medico, tipo_exame,
+                            data_realizacao_exame,conclusao,status,nomeDaClinica,cpfPaciente));
                 }
             }
             System.out.println("Paciente encontrado com sucesso!");
         } catch (Exception e) {
             throw new Exception("Erro ao encontrar paciente: " + cpf);
         }
+        System.out.println(exames);
         return exames;
     }
 

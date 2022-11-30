@@ -5,29 +5,35 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Servidor {
+    private Socket socket;
     private ServerSocket serverSocket;
+    public void iniciarServidor() throws IOException {
 
-    public Servidor(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
-    }
-
-    public void iniciarServidor() {
         try {
-            while (!serverSocket.isClosed()) {
-                Socket socket = serverSocket.accept();
+            serverSocket = new ServerSocket(3002);
+            while (true) {
+                System.out.println("oi");
+                socket = serverSocket.accept();
+                System.out.println(socket);
                 System.out.println("Nova conexão");
-                ClientHandler clientHandler = new ClientHandler(socket);
-                Thread thread = new Thread(clientHandler);
+                Thread thread = new Thread(new ClientHandler(socket));
                 thread.start();
             }
         } catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
+        } finally {
+            if (serverSocket != null) {
+                try {
+                    serverSocket.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(3000);
-        Servidor servidor = new Servidor(serverSocket);
-        servidor.iniciarServidor();
+        new Servidor().iniciarServidor();
     }
 }

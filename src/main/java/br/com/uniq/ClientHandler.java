@@ -12,30 +12,25 @@ import java.util.ArrayList;
 
 public class ClientHandler implements Runnable{
 
-    public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
     private Socket socket;
-    private ObjectInputStream receptor;
-    private ObjectOutputStream transmissor;
-    private ModeloDeCadastro clientInfo;
 
     public ClientHandler(Socket socket) {
-        try{
-            this.socket = socket;
-            this.transmissor = new ObjectOutputStream(socket.getOutputStream());
-            this.receptor    = new ObjectInputStream(socket.getInputStream());
-//            this.clientInfo = (MeuObj) receptor.readObject();
-//            System.out.println(clientInfo.getNome()+clientInfo.getCpf()+clientInfo.getIdade()+clientInfo.getSenha());
-            clientHandlers.add(this);
-//            broadcastMessage("SERVER: "+clientUsername+" has entered the chat!");
-
-        } catch (IOException e){
-            fecharTodasConexoes(socket, transmissor, receptor);
-        }
-
+        this.socket = socket;
     }
 
     @Override
     public void run() {
+
+        ObjectInputStream receptor;
+        ObjectOutputStream transmissor;
+
+        try {
+            receptor = new ObjectInputStream(socket.getInputStream());
+            transmissor = new ObjectOutputStream(socket.getOutputStream());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         while(socket.isConnected()){
 
@@ -106,6 +101,7 @@ public class ClientHandler implements Runnable{
                             }
                         } catch (Exception e){
                             System.out.println("Erro - #10");
+                            e.printStackTrace();
                             transmissor.writeObject(new RespostaDoServidor("Erro interno","erro"));
                         }
                     }
