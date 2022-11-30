@@ -29,7 +29,7 @@ public class ExamesDAO {
         ArrayList<ModeloDeExames> exames = null;
         try {
             String sql;
-            sql = "SELECT * from [dbo].[EXAMES] " +
+            sql = "SELECT * from EXAMES " +
                     "WHERE CPF_Paciente = ? ";
             if (connection != null) {
                 PreparedStatement ps = connection.prepareStatement(sql);
