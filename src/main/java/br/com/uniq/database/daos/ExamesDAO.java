@@ -1,53 +1,54 @@
 package br.com.uniq.database.daos;
 
+import br.com.uniq.ModeloDeExames;
 import br.com.uniq.database.ConnectionFactory;
 import br.com.uniq.database.dbos.Patient;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
-public class PatientDAO {
+public class ExamesDAO {
 
-    public static String nomeDoUsuarioRegistrado;
+    public static String cpfDoUsuario;
 
-    public static void cadastrarNovoUsuario(Patient patient) throws Exception {
-        if (patient == null) {
+    public static ArrayList<ModeloDeExames> checarExames(String cpf) throws Exception {
+        if (cpf == null) {
             throw new Exception("Paciente não fornecido");
         }
-        if (patient.getCpf().length() != 11) {
+        if (cpf.length() != 11) {
             throw new Exception("CPF inválido!");
         }
-        if (patient.getIdade() > 120) {
-            throw new Exception("Idade inválida!");
-        }
-        if (checarSeUsuarioJaEstaRegistrado(patient.getCpf())) {
-            throw new Exception("Paciente já registrado, insira outro CPF");
+        if (!checarSeUsuarioJaEstaRegistrado(cpf)) {
+            throw new Exception("Paciente não encontrado, insira outro CPF");
         }
 
         Connection connection = ConnectionFactory.getConnection();
 
+        ArrayList<ModeloDeExames> exames = null;
         try {
             String sql;
-//            PARA CONEXAO EM CLOUD
-//            sql = "INSERT INTO [dbo].[PACIENTES] " +
-//                    "(Nome_Paciente, CPF_Paciente, Idade, Senha) " +
-//                    "VALUES (?, ?, ?, ?)";
-            sql = "INSERT INTO PACIENTES " +
-                    "(Nome_Paciente, CPF_Paciente, Idade, Senha) " +
-                    "VALUES (?, ?, ?, ?)";
+            sql = "SELECT * from EXAMES " +
+                    "WHERE CPF_Paciente = ? ";
             if (connection != null) {
                 PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setString(1, patient.getNome());
-                ps.setString(2, patient.getCpf());
-                ps.setInt(3, patient.getIdade());
-                ps.setString(4,patient.getSenha());
-
-                ps.executeUpdate();
-                System.out.println("Paciente registrado com sucesso!");
+                ps.setString(1, cpf);
+                ResultSet resultSet = ps.executeQuery();
+                exames = new ArrayList<>();
+                while (resultSet.next()) {
+                    String nome_medico = resultSet.getString("Doutor");
+                    String espec_medico = resultSet.getString("Especializacao_Doutor");
+                    String tipo_exame = resultSet.getString("Tipo_Exame_Area");
+                    Date data_realizacao_exame = resultSet.getDate("Data_Hora_Exame");
+                    exames.add(new ModeloDeExames(nome_medico, espec_medico, tipo_exame, data_realizacao_exame));
+                }
             }
+            System.out.println("Paciente encontrado com sucesso!");
         } catch (Exception e) {
-            throw new Exception("Erro ao registrar paciente: " + patient.getCpf());
+            throw new Exception("Erro ao encontrar paciente: " + cpf);
         }
+        return exames;
     }
 
     public static boolean checarSeUsuarioJaEstaRegistrado(String cpf) throws Exception {
@@ -70,7 +71,6 @@ public class PatientDAO {
             ps.setString(1, cpf);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                nomeDoUsuarioRegistrado = rs.getString("NOME_Paciente");
                 jaRegistrado = true;
             }
             else {

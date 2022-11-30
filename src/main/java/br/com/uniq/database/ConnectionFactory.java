@@ -5,9 +5,14 @@ import java.util.logging.Logger;
 
 public class ConnectionFactory {
     public static Connection getConnection() {
-        String url = "jdbc:sqlserver://uniq-project.database.windows.net:1433;database=uniq;loginTimeout=45";
-        String user = "uniq-admin";
-        String password = "Projetointegrador4";
+//        CODIGO ABAIXO PARA CONEXAO CLOUD ( tava muito lenta, por isso troquei para local )
+//        String url = "jdbc:sqlserver://uniq-project.database.windows.net:1433;database=uniq;loginTimeout=45";
+//        String user = "uniq-admin";
+//        String password = "Projetointegrador4";
+
+        String url = "jdbc:mysql://localhost:3306/uniq";
+        String user = "root";
+        String password = "teka2012";
 
         try {
             return DriverManager.getConnection(url, user, password);
