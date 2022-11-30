@@ -1,8 +1,8 @@
 package br.com.uniq.database.daos;
 
-import br.com.uniq.ModeloDeExames;
+import br.com.uniq.modelos.ModeloDeExames;
 import br.com.uniq.database.ConnectionFactory;
-import br.com.uniq.database.dbos.Patient;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;

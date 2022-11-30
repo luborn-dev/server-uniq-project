@@ -12,10 +12,8 @@ public class Servidor {
         try {
             serverSocket = new ServerSocket(3002);
             while (true) {
-                System.out.println("oi");
                 socket = serverSocket.accept();
-                System.out.println(socket);
-                System.out.println("Nova conexão");
+                System.out.println("Nova conexão recebida -> "+socket);
                 Thread thread = new Thread(new ClientHandler(socket));
                 thread.start();
             }

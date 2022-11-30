@@ -3,6 +3,10 @@ package br.com.uniq;
 import br.com.uniq.database.daos.ExamesDAO;
 import br.com.uniq.database.daos.PatientDAO;
 import br.com.uniq.database.dbos.Patient;
+import br.com.uniq.modelos.ModeloDeCadastro;
+import br.com.uniq.modelos.ModeloDeExames;
+import br.com.uniq.modelos.ModeloDeLogin;
+import br.com.uniq.modelos.ModeloDeRespostaDoServidor;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -58,9 +62,9 @@ public class ClientHandler implements Runnable{
                                     cadastroRecebidoDoCliente.getIdade(),
                                     cadastroRecebidoDoCliente.getSenha()
                                     ));
-                            transmissor.writeObject(new RespostaDoServidor("Usuário cadastrado!","ok"));
+                            transmissor.writeObject(new ModeloDeRespostaDoServidor("Usuário cadastrado!","ok"));
                         } catch (Exception e){
-                            transmissor.writeObject(new RespostaDoServidor("Erro ao cadastrar usuário","erro"));
+                            transmissor.writeObject(new ModeloDeRespostaDoServidor("Erro ao cadastrar usuário","erro"));
                             System.out.println(e);
                         }
                     }
@@ -74,15 +78,15 @@ public class ClientHandler implements Runnable{
                                 System.out.println("Sucesso - Encontrado");
                                 String nomeDoUsuarioLogado = PatientDAO.nomeDoUsuarioRegistrado;
 
-                                transmissor.writeObject(new RespostaDoServidor(nomeDoUsuarioLogado,"ok"));
+                                transmissor.writeObject(new ModeloDeRespostaDoServidor(nomeDoUsuarioLogado,"ok"));
                             } else{
                                 System.out.println("Erro - Nao encontrado");
-                                transmissor.writeObject(new RespostaDoServidor("Usuário não encontrado","erro"));
+                                transmissor.writeObject(new ModeloDeRespostaDoServidor("Usuário não encontrado","erro"));
                             }
                         } catch (Exception e){
                             e.printStackTrace();
                             System.out.println("Erro - #10");
-                            transmissor.writeObject(new RespostaDoServidor("Erro interno","erro"));
+                            transmissor.writeObject(new ModeloDeRespostaDoServidor("Erro interno","erro"));
                             }
                         }
                     if (recebidoDoCliente instanceof String){
@@ -94,15 +98,15 @@ public class ClientHandler implements Runnable{
                             exames = ExamesDAO.checarExames(cpfRecebidoDoCliente);
                             if(exames != null){
                                 System.out.println("Sucesso - Exames encontrados");
-                                transmissor.writeObject(new RespostaDoServidor(exames,"ok"));
+                                transmissor.writeObject(new ModeloDeRespostaDoServidor(exames,"ok"));
                             } else{
                                 System.out.println("Erro - Nao encontrado");
-                                transmissor.writeObject(new RespostaDoServidor("Exames não encontrados","erro"));
+                                transmissor.writeObject(new ModeloDeRespostaDoServidor("Exames não encontrados","erro"));
                             }
                         } catch (Exception e){
                             System.out.println("Erro - #10");
                             e.printStackTrace();
-                            transmissor.writeObject(new RespostaDoServidor("Erro interno","erro"));
+                            transmissor.writeObject(new ModeloDeRespostaDoServidor("Erro interno","erro"));
                         }
                     }
                     }

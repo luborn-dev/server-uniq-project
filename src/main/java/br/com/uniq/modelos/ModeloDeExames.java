@@ -1,11 +1,8 @@
-package br.com.uniq;
+package br.com.uniq.modelos;
 
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-public class ModeloDeExames extends Comunicado {
+public class ModeloDeExames extends ModeloDeComunicado {
 
     private String nomeDoMedico;
     private String especialidadeDoMedico;
